@@ -1,3 +1,6 @@
+using Microsoft.AspNetCore.OpenApi;
+using Microsoft.OpenApi.Models;
+using static openapispec.Controllers.WeatherForecastController;
 
 namespace openapispec
 {
@@ -6,29 +9,22 @@ namespace openapispec
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
-            // Add services to the container.
-
             builder.Services.AddControllers();
-            // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-            
-            //.NET API GEn
+
+            //.Microsoft.AspnetCore.OpenApi
             builder.Services.AddOpenApi();
 
-            //NSWAG
+            //NSwag
             builder.Services.AddOpenApiDocument();
-
-
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
-                //.NET 9
+                //.Microsoft.AspnetCore.OpenApi
                 app.MapOpenApi();
 
-                //NSWAG
+                //NSwag
                 app.UseOpenApi();
 
             }
@@ -39,6 +35,11 @@ namespace openapispec
 
 
             app.MapControllers();
+
+            app.MapGet("/minimal-api-approach", () =>
+            {
+                return "Hello World!";
+            }).Produces<Dictionary<AuthErrorType, ErrorDetail>>().WithOpenApi();
 
             app.Run();
         }

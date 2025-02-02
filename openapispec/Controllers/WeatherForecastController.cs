@@ -7,31 +7,26 @@ namespace openapispec.Controllers
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {
-
-
         public WeatherForecastController() { }
 
-        [HttpGet(Name = "GetWeatherForecast")]
-        [ProducesResponseType<SuccessResult>(200)]
-        [ProducesResponseType<FailureResult<ErrorEnumType>>(400)]
-        [ProducesResponseType<FailureResult<ErrorEnumType>>(401)]
+        [HttpGet(Name = "controller-approach")]
+        [ProducesResponseType<FailureResult<AuthErrorType>>(401)]
+        [ProducesResponseType<Dictionary<AuthErrorType, ErrorDetail>>(403)]
+
         public Task<IActionResult> Get()
         {
-            return null;
+            throw new NotImplementedException();
         }
 
-        public record SuccessResult(string Description);
+        public record FailureResult<T>(Dictionary<T, ErrorDetail> Errors) where T : Enum;
 
-        public record FailureResult<T>(Dictionary<T, ErrorWrapper> Errors) where T : Enum;
+        public record ErrorDetail(string Description);
 
-        public record ErrorWrapper(string Description);
-
-        [JsonConverter(typeof(JsonStringEnumConverter<ErrorEnumType>))]
-        public enum ErrorEnumType
+        [JsonConverter(typeof(JsonStringEnumConverter<AuthErrorType>))]
+        public enum AuthErrorType
         {
-            Error400,
-            Error401,
-            Errir500 
+            InvalidCredentials,
+            InvalidLogin
         }
     }
 }
